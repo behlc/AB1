@@ -1,5 +1,7 @@
 //using System.Numerics;
 //using Unity.VisualScripting;
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class Bird : MonoBehaviour
@@ -55,6 +57,18 @@ public class Bird : MonoBehaviour
         transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        StartCoroutine(ResetAfterDelay());
+    }
+
+    IEnumerator ResetAfterDelay()
+    {
+        yield return new WaitForSeconds(3f);
+        rb.position = startPosition;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.linearVelocity = Vector2.zero;
+    }
 
 
 }
