@@ -10,8 +10,8 @@ public class Bird : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Vector2 startPosition;
     [SerializeField] float launchForce = 500f;
+    [SerializeField] float maxDragDistance = 5f;
     
-
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -54,7 +54,24 @@ public class Bird : MonoBehaviour
     void OnMouseDrag()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
+
+        Vector2 desiredPosition = mousePosition; //takes the x and y position
+
+        float distance = Vector2.Distance(desiredPosition, startPosition);
+        if (distance > maxDragDistance)
+        {
+            Vector2 direction = desiredPosition - startPosition;
+            direction.Normalize();
+            desiredPosition = startPosition + (direction * maxDragDistance);
+        }
+
+        if (desiredPosition.x > startPosition.x) //desiredPosition is to the right of start
+        {
+            desiredPosition.x = startPosition.x;
+        }
+
+        rb.position = desiredPosition;
+        //transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
